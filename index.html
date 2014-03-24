@@ -3,155 +3,242 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Foundation</title>
+    <title>CoCo Litebrite</title>
     <link rel="stylesheet" href="css/app.css" />
     <script src="bower_components/modernizr/modernizr.js"></script>
   </head>
   <body>
     <div class="row">
       <div class="large-12 columns">
-        <h1>Welcome to Foundation</h1>
+        <h1>CoCo Litebrite</h1>
       </div>
     </div>
 
     <div class="row">
       <div class="large-12 columns">
         <div class="panel">
-          <h3>We&rsquo;re stoked you want to try Foundation! </h3>
-          <p>To get going, this file (index.html) includes some basic styles you can modify, play around with, or totally destroy to get going.</p>
-          <p>Once you've exhausted the fun in this document, you should check out:</p>
-          <div class="row">
-            <div class="large-4 medium-4 columns">
-          <p><a href="http://foundation.zurb.com/docs">Foundation Documentation</a><br />Everything you need to know about using the framework.</p>
+          <h3>Welcome!</h3>
+          <p>If you're looking to write some neat stuff to the Litebrite, you've come to the right place.</p>
         </div>
-            <div class="large-4 medium-4 columns">
-              <p><a href="http://github.com/zurb/foundation">Foundation on Github</a><br />Latest code, issue reports, feature requests and more.</p>
-            </div>
-            <div class="large-4 medium-4 columns">
-              <p><a href="http://twitter.com/foundationzurb">@foundationzurb</a><br />Ping us on Twitter if you have questions. If you build something with this we'd love to see it (and send you a totally boss sticker).</p>
-            </div>
-          </div>
+        <div class="panel">
+          <h3>Peggy</h3>
+          <p>
+            Peggy is the name of the server software that runs the Litebrite. It's also what
+            we call the API which you can use to write your own content to the board. The
+            API has been through a number of iterations over the years. The current version
+            is built for simplicity over all else. If you have written a client to use the
+            previous version, sorry, this version is in no way backwards compatible.
+          </p>
+        </div>
+
+        <div class="panel">
+          <h3>Litebrite Basics</h3>
+          <h5>Board Addressing</h5>
+          <p>
+            The board is actually 6 boards connected through two interfaces. Technically, the top and
+            bottom board operate independently, although we obfuscate this in the API. The boards
+            are numberd, zero indexed, 0-5, like so:
+          </p>
+          <div style="margin: 2em auto;"><img src="boardNumbers.jpg" /></div>
+          <h5>Characters</h5>
+          <p>
+            Since this once only displayed financial data, it's not suprising that the board is only
+            capable of displaying certain characters. Specifically, a-z, A-Z, 0-9, and a handful of
+            special characters.
+          </p>
+          <h5>Colors</h5>
+          <p>
+            The board will print three colors: green, orange, and red. Green is the default, and unless
+            you specify otherwise, that's what will print.
+          </p>
+        </div>
+
+        <div class="panel">
+
+          <h3>API</h3>
+
+          <p>
+            The API can be accessed at: <code>http://10.105.4.251/peggy/</code>. From there, you
+            can make two calls: <code>write</code> and <code>clear</code>.
+          </p>
+
+          <p>
+            In previous versions of the Peggy API we had the concept of acquiring a lease for the board.
+            Our thought was that if someone wanted to take part of the board they wouldn't want to share.
+            Perhaps we thought writing to the board would be far more popular than it actually is. So,
+            for this version we've simplified this down to a simple queue. Every request to the board
+            is added to the queue and every 50 milliseconds the next one is executed. The good news is
+            that ALL board operations work this way. Previously things like the time and weather would
+            grab the socket and kick everyone else off. No more. It's just a simple queue.
+          </p>
+
+          <hr>
+
+          <h4>Write</h4>
+          <p>
+            If you want to write content to the board, you'd call <code>http://10.105.4.251/peggy/write</code>.
+            The following parameters should be included in your request. All are required.
+          </p>
+          <ul>
+            <li><code>board</code>: This is the board you want to write to.</li>
+            <li>
+              <code>x</code>: The x coordinate you'd like to start printing to. This is zero-indexed, so
+              the left most column on the board is 0 and the right most is 79.
+            </li>
+            <li>
+              <code>y</code>: The y coordinate you'd like to start printing to. This is zero-indexed, so
+              the top row on the board is 0 and the bottom is 11.
+            </li>
+            <li>
+              <code>text</code>: The text you'd like to have printed.
+            </li>
+          </ul>
+          <p>
+            So, if you wanted to print "Hello World!" to the middle of the bottom-left board, your
+            call would look like this:
+            <code>http://10.105.4.251/peggy/write?board=2&x=33&y=5&text=Hell0%20World!</code>.
+            You can use the test form below to try it out yourself.
+          </p>
+
+          <h5>Colors / Markup</h5>
+
+          <p>
+            In order to indicate what color you want to print, you can simply add one of the following
+            bits of markup to the text you pass in:
+          </p>
+
+          <ul>
+            <li><code>{g}</code> (default): Change the color to <span style="color: green">green</span>.</li>
+            <li><code>{r}</code>: Change the color to <span style="color: red;">red</span>.</li>
+            <li><code>{o}</code>: Change the color to <span style="color: orange;">orange</span>.</li>
+          </ul>
+
+          <p>
+            These codes aren't tags, you won't wrap your text. They simply change the color of the print
+            until the end of the write or until you change it again. Take this example:
+          </p>
+
+          <p>
+            <span style="color: red;">Red text is cool,</span>
+            <span style="color: orange;">but orange is neat,</span>
+            <span style="color: green;">and green is too.</span>
+          </p>
+
+          <p>
+            The text portion of your call would look like this:
+          </p>
+
+          <p>
+            <code>{r}Red text is cool, {o}but orange is neat, {g}and green is too.</code>
+          </p>
+
+          <hr>
+
+          <h4>Clear</h4>
+          <p>
+            If you want to clear the content off the board, you'd call <code>http://10.105.4.251/peggy/clear</code>.
+            Calling it without any parameters will clear off the entire board. Otherwise, you
+            can include the board number:
+          </p>
+          <ul>
+            <li><code>board</code> (optional): This is the board you want to clear.</li>
+          </ul>
+          <p>
+            So, if you wanted to clear the bottom-middle board, your
+            call would look like this:
+            <code>http://10.105.4.251/peggy/clear?board=3</code>.
+          </p>
         </div>
       </div>
     </div>
 
     <div class="row">
       <div class="large-8 medium-8 columns">
-        <h5>Here&rsquo;s your basic grid:</h5>
-        <!-- Grid Example -->
-
-        <div class="row">
-          <div class="large-12 columns">
-            <div class="callout panel">
-              <p><strong>This is a twelve column section in a row.</strong> Each of these includes a div.panel element so you can see where the columns are - it's not required at all for the grid.</p>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="large-6 medium-6 columns">
-            <div class="callout panel">
-              <p>Six columns</p>
-            </div>
-          </div>
-          <div class="large-6 medium-6 columns">
-            <div class="callout panel">
-              <p>Six columns</p>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="large-4 medium-4 small-4 columns">
-            <div class="callout panel">
-              <p>Four columns</p>
-            </div>
-          </div>
-          <div class="large-4 medium-4 small-4 columns">
-            <div class="callout panel">
-              <p>Four columns</p>
-            </div>
-          </div>
-          <div class="large-4 medium-4 small-4 columns">
-            <div class="callout panel">
-              <p>Four columns</p>
-            </div>
-          </div>
-        </div>
-
-        <hr />
-
-        <h5>We bet you&rsquo;ll need a form somewhere:</h5>
-        <form>
-          <div class="row">
-            <div class="large-12 columns">
-              <label>Input Label</label>
-              <input type="text" placeholder="large-12.columns" />
-            </div>
-          </div>
-          <div class="row">
-            <div class="large-4 medium-4 columns">
-              <label>Input Label</label>
-              <input type="text" placeholder="large-4.columns" />
-            </div>
-            <div class="large-4 medium-4 columns">
-              <label>Input Label</label>
-              <input type="text" placeholder="large-4.columns" />
-            </div>
-            <div class="large-4 medium-4 columns">
-              <div class="row collapse">
-                <label>Input Label</label>
-                <div class="small-9 columns">
-                  <input type="text" placeholder="small-9.columns" />
-                </div>
-                <div class="small-3 columns">
-                  <span class="postfix">.com</span>
-                </div>
+        <div class="panel">
+          <h3>Give it a Try</h3>
+          <form name="peggyTester">
+            <div class="row">
+              <div class="large-12 columns">
+                <ul class="errors"></ul>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="large-12 columns">
-              <label>Select Box</label>
-              <select>
-                <option value="husker">Husker</option>
-                <option value="starbuck">Starbuck</option>
-                <option value="hotdog">Hot Dog</option>
-                <option value="apollo">Apollo</option>
-              </select>
+            <div class="row">
+              <div class="large-12 columns">
+                <label>Text</label>
+                <input type="text" name="text" required="required" placeholder="The text you want to print to the board" />
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="large-6 medium-6 columns">
-              <label>Choose Your Favorite</label>
-              <input type="radio" name="pokemon" value="Red" id="pokemonRed"><label for="pokemonRed">Radio 1</label>
-              <input type="radio" name="pokemon" value="Blue" id="pokemonBlue"><label for="pokemonBlue">Radio 2</label>
+            <div class="row">
+              <div class="large-4 medium-4 columns">
+                <label>Board</label>
+                <select name="board" required="required">
+                  <option value="0">0 - Top Left</option>
+                  <option value="1">1 - Top Middle</option>
+                  <option value="2">2 - Bottom Left</option>
+                  <option value="3">3 - Bottom Middle</option>
+                  <option value="4">4 - Top Right</option>
+                  <option value="5">5 - Bottom Right</option>
+                </select>
+              </div>
+              <div class="large-4 medium-4 columns">
+                <label>X Coordinate</label>
+                <input type="text" name="x" required="required" placeholder="an integer, e.g. 5" />
+              </div>
+              <div class="large-4 medium-4 columns">
+                <label>Y Coordinate</label>
+                <input type="text" name="y" required="required" placeholder="an integer, e.g. 2" />
+              </div>
             </div>
-            <div class="large-6 medium-6 columns">
-              <label>Check these out</label>
-              <input id="checkbox1" type="checkbox"><label for="checkbox1">Checkbox 1</label>
-              <input id="checkbox2" type="checkbox"><label for="checkbox2">Checkbox 2</label>
+            <div class="row">
+              <div class="large-12 columns">
+                <label>Peggy API URL</label>
+                <input type="text" name="peggyUrl" readonly="readonly">
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="large-12 columns">
-              <label>Textarea Label</label>
-              <textarea placeholder="small-12.columns"></textarea>
+            <div class="row">
+              <div class="large-12 columns">
+                <input type="submit" class="small button" value="Build URL" />
+                <button class="sendToPeggy small button" disabled="disabled">Send to Peggy</button>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
 
       <div class="large-4 medium-4 columns">
-        <h5>Try one of these buttons:</h5>
-        <p><a href="#" class="small button">Simple Button</a><br/>
-        <a href="#" class="small radius button">Radius Button</a><br/>
-        <a href="#" class="small round button">Round Button</a><br/>
-        <a href="#" class="medium success button">Success Btn</a><br/>
-        <a href="#" class="medium alert button">Alert Btn</a><br/>
-        <a href="#" class="medium secondary button">Secondary Btn</a></p>
-        <div class="panel">
-          <h5>So many components, girl!</h5>
-          <p>A whole kitchen sink of goodies comes with Foundation. Checkout the docs to see them all, along with details on making them your own.</p>
-          <a href="http://foundation.zurb.com/docs/" class="small button">Go to Foundation Docs</a>
+        <div class="callout panel">
+          <h5>Get Help</h5>
+          <p>
+            If you're lost and need a little guidance, try
+            <a href="mailto:robert@iremote.com">Robert Nelson</a>.
+          </p>
+        </div>
+        <div class="callout panel">
+          <h5>Give Help</h5>
+          <p>
+            If you're a developer, we'd love for you to pitch in making Peggy
+            better. A good place to start is getting the code from
+            <a href="https://github.com/RobertDNelson/Peggy">Github</a>. If
+            you have any questions at all, please talk to Robert.
+          </p>
+        </div>
+        <div class="callout panel">
+          <h5>Give Thanks</h5>
+          <p>
+            None of this fun stuff would have been possible without the
+            hard work and (I dare say) genius of <a href="https://twitter.com/dmiddlecamp">David
+            Middlecamp</a>. Somehow he looked at a few bare wires hanging
+            out of the back of the board and figured out how to print
+            text to it. Insane.
+          </p>
+          <p>
+            Thanks should also go out to <a href="https://twitter.com/_RyanJohnson_">Ryan
+            Johnson</a> without whom we'd never have this shiny Node version of Peggy
+            that we have today.
+          </p>
+          <p>
+            If you see either of these two out in the wild, buy them a drink or something.
+          </p>
         </div>
       </div>
     </div>
@@ -159,5 +246,52 @@
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/foundation/js/foundation.min.js"></script>
     <script src="js/app.js"></script>
+
+<script>
+$(document).on("ready", function() {
+  var errorUl = $(this).find("ul.errors");
+
+  $("form[name=peggyTester]").on("submit", function(event) {
+    event.preventDefault();
+    errorUl.empty();
+
+    var text = $(this).find("input[name=text]").val();
+    var board = $(this).find("select[name=board]").val();
+    var x = parseInt($(this).find("input[name=x]").val(), 10);;
+
+    if (!$.isNumeric($(this).find("input[name=x]").val())) {
+      errorUl.append("<li>The X Coordinate must be an integer.");
+    } else if (x < 0 || x > 79) {
+      errorUl.append("<li>The X Coordinate must be between 0 and 79.");
+    }
+
+    var y = parseInt($(this).find("input[name=y]").val(), 10);
+
+    if (!$.isNumeric($(this).find("input[name=y]").val())) {
+      errorUl.append("<li>The Y Coordinate must be an integer.");
+    } else if (y < 0 || y > 11) {
+      errorUl.append("<li>The Y Coordinate must be between 0 and 11.");
+    }
+
+    if (errorUl.children().size() == 0) {
+      var peggyUrl = "http://10.105.4.251/peggy/write?board=" + board + "&x=" + x + "&y=" + y + "&text=" + encodeURIComponent(text);
+      $(this).find("input[name=peggyUrl]").val(peggyUrl);
+      $("button.sendToPeggy").removeAttr("disabled");
+    } else {
+      $(this).find("input[name=peggyUrl]").val("");
+      $("button.sendToPeggy").attr("disabled", "disabled");
+    }
+  });
+
+  $("button.sendToPeggy").on("click", function() {
+    $.get($("form[name=peggyTester]").find("input[name=peggyUrl]").val())
+      .done(function() { alert("done"); })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+          errorUl.append("<li>The request failed: " + textStatus + "</li>");
+        });
+  });
+});
+</script>
+
   </body>
 </html>

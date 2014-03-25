@@ -72,23 +72,22 @@ $(document).on("ready", function() {
 
     if (text) {
       var lines = text.split("\n");
+      var peggyUrl = "http://10.105.4.251/peggy/write?board=" + board + "&x=0&y=";
 
       // We'll clear the board first.
       $.get("http://10.105.4.251/peggy/clear?board=" + board)
-          .done(function() {})
+          .done(function() {
+            $.each(lines, function(i, line) {
+              $.get(peggyUrl + i + "&text=" + encodeURIComponent(line))
+                    .done(function() {})
+                    .fail(function(jqXHR, textStatus, errorThrown) {
+                        errorUl.append("<li>The request failed: " + textStatus + "</li>");
+                      });
+            });
+          })
           .fail(function(jqXHR, textStatus, errorThrown) {
               errorUl.append("<li>The request failed: " + textStatus + "</li>");
             });
-
-      var peggyUrl = "http://10.105.4.251/peggy/write?board=" + board + "&x=0&y=";
-
-      $.each(lines, function(i, line) {
-        $.get(peggyUrl + i + "&text=" + encodeURIComponent(line))
-              .done(function() {})
-              .fail(function(jqXHR, textStatus, errorThrown) {
-                  errorUl.append("<li>The request failed: " + textStatus + "</li>");
-                });
-      });
     }
   });
 });

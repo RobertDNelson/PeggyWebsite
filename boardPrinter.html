@@ -80,7 +80,7 @@ $(document).on("ready", function() {
               errorUl.append("<li>The request failed: " + textStatus + "</li>");
             });
 
-      var peggyUrl = "http://10.105.4.251/peggy/write?board=" + board + "&y=0&x=";
+      var peggyUrl = "http://10.105.4.251/peggy/write?board=" + board + "&x=0&y=";
 
       $.each(lines, function(i, line) {
         $.get(peggyUrl + i + "&text=" + encodeURIComponent(line))

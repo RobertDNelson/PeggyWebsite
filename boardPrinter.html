@@ -84,11 +84,13 @@ $(document).on("ready", function() {
 
       $.each(lines, function(i, line) {
         $.get(peggyUrl + i + "&text=" + encodeURIComponent(line))
-              .done(function() { alert("done"); })
+              .done(function() {})
               .fail(function(jqXHR, textStatus, errorThrown) {
                   errorUl.append("<li>The request failed: " + textStatus + "</li>");
                 });
       });
+
+      alert("done");
     }
   });
 });

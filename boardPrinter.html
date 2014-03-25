@@ -1,0 +1,98 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Board Printer - CoCo Litebrite</title>
+    <link rel="stylesheet" href="css/app.css" />
+    <script src="bower_components/modernizr/modernizr.js"></script>
+  </head>
+  <body>
+    <div class="row">
+      <div class="large-12 columns">
+        <h1>CoCo Litebrite</h1>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-12 columns">
+        <div class="panel">
+          <h2>Board Printer</h2>
+          <p>This is a little tool I put together to print an entire block of text to one of
+            the Litebrite boards. It's a pretty simple bit of Javascript, so view the source
+            of this page if you're curious.</p>
+          <ul class="errors"></ul>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <form name="boardPrinterForm">
+        <div class="large-12 columns">
+          <div class="panel">
+            <div class="row">
+              <div class="large-12 columns">
+                <label>Board</label>
+                <select name="board" required="required">
+                  <option value="0">0 - Top Left</option>
+                  <option value="1">1 - Top Middle</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+                <div class="large-12 columns">
+                  <label>Text</label>
+                  <textarea name="text" rows="12" columns="80"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="large-12 columns">
+                <input type="submit" class="small button" value="Print to Litebrite" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/foundation/js/foundation.min.js"></script>
+    <script src="js/app.js"></script>
+
+<script>
+$(document).on("ready", function() {
+  var errorUl = $("ul.errors");
+
+  $("form[name=boardPrinterForm]").on("submit", function(event) {
+    event.preventDefault();
+    errorUl.empty();
+
+    var board = $(this).find("select[name=board]").val();
+    var text = $(this).find("textarea[name=text]").val();
+
+    if (text) {
+      var lines = text.split("\n");
+
+      // We'll clear the board first.
+      $.get("http://10.105.4.251/peggy/clear?board=" + board)
+          .done(function() {})
+          .fail(function(jqXHR, textStatus, errorThrown) {
+              errorUl.append("<li>The request failed: " + textStatus + "</li>");
+            });
+
+      var peggyUrl = "http://10.105.4.251/peggy/write?board=" + board + "&y=0&x=";
+
+      $.each(lines, function(i, line) {
+        $.get(peggyUrl + i + "&text=" + encodeURIComponent(line))
+              .done(function() { alert("done"); })
+              .fail(function(jqXHR, textStatus, errorThrown) {
+                  errorUl.append("<li>The request failed: " + textStatus + "</li>");
+                });
+      });
+    }
+  });
+});
+</script>
+
+  </body>
+</html>

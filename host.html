@@ -51,10 +51,10 @@ $(document).on("ready", function() {
   $("form[name=powerSwitch]").on("submit", function(event) {
     event.preventDefault();
     if ($("form[name=powerSwitch] input[type=submit]").attr("value") == "Turn Off") {
-      $.get("/peggy/turnOff");
+      $.get("/peggy/off");
       toggleButton();
     } else {
-      $.get("/peggy/turnOn");
+      $.get("/peggy/on");
       toggleButton();
     }
   });

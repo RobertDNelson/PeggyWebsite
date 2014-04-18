@@ -48,6 +48,8 @@ $(document).on("ready", function() {
     });
   }
 
+  toggleButton();
+
   $("form[name=powerSwitch]").on("submit", function(event) {
     event.preventDefault();
     if ($("form[name=powerSwitch] input[type=submit]").attr("value") == "Turn Off") {

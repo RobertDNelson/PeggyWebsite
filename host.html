@@ -1,0 +1,67 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoCo Litebrite, Host Edition</title>
+    <link rel="stylesheet" href="css/app.css" />
+    <script src="bower_components/modernizr/modernizr.js"></script>
+  </head>
+  <body>
+    <div class="row">
+      <div class="large-12 columns">
+        <h1>CoCo Litebrite, Host Edition</h1>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-12 columns">
+        <div class="panel">
+          <h3>On/Off</h3>
+          <p>Turn the board on or off.</p>
+          <ul class="errors"></ul>
+          <form name="powerSwitch">
+            <div>
+              <input type="submit" value="Turn Off" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/foundation/js/foundation.min.js"></script>
+    <script src="js/app.js"></script>
+
+<script>
+$(document).on("ready", function() {
+  var errorUl = $(this).find("ul.errors");
+
+  var toggleButton = function() {
+    $.get("/peggy/powerStatus", function(data) {
+      var submitButton = $("form[name=powerSwitch] input[type=submit]");
+      if (data.powerOn) {
+        submitButton.attr("value", "Turn Off");
+      } else {
+        submitButton.attr("value", "Turn On");
+      }
+    });
+  }
+
+  $("form[name=powerSwitch]").on("submit", function(event) {
+    event.preventDefault();
+    if ($("form[name=powerSwitch] input[type=submit]").attr("value") == "Turn Off") {
+      $.get("/peggy/turnOff");
+      toggleButton();
+    } else {
+      $.get("/peggy/turnOn");
+      toggleButton();
+    }
+  }
+//    alert("Turning the board " + $(this).find("input[name=power]").val());
+  });
+});
+</script>
+
+  </body>
+</html>

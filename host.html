@@ -40,7 +40,7 @@ $(document).on("ready", function() {
   var toggleButton = function() {
     $.get("/peggy/powerStatus", function(data) {
       var submitButton = $("form[name=powerSwitch] input[type=submit]");
-      if (data.powerOn) {
+      if (data.powerOn == true) {
         submitButton.attr("value", "Turn Off");
       } else {
         submitButton.attr("value", "Turn On");

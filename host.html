@@ -22,7 +22,25 @@
           <ul class="errors"></ul>
           <form name="powerSwitch">
             <div>
-              <input type="submit" value="Turn Off" />
+              <input type="submit" value="Turn Off" class="button radius" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-12 columns">
+        <div class="panel">
+          <h3>Twitter Board</h3>
+          <p>Change the search term used to populate the twitter board.</p>
+          <ul class="errors"></ul>
+          <form name="twitterBoard">
+            <div>
+              <input type="text" name="newTwitterSearchTerm" placeholder="New Twitter Search Term" required="required" />
+            </div>
+            <div>
+              <input type="submit" value="Change" class="button radius" />
             </div>
           </form>
         </div>
@@ -38,7 +56,7 @@ $(document).on("ready", function() {
   var errorUl = $(this).find("ul.errors");
 
   var toggleButton = function() {
-    $.get("/peggy/powerStatus", function(data) {
+    $.get("/peggy/status", function(data) {
       var submitButton = $("form[name=powerSwitch] input[type=submit]");
       if (data.powerOn == true) {
         submitButton.attr("value", "Turn Off");
@@ -61,6 +79,13 @@ $(document).on("ready", function() {
         toggleButton();
       });
     }
+  });
+
+  $("form[name=twitterBoard]").on("submit", function(event) {
+    event.preventDefault();
+    $.get("/peggy/twitter?q=" + encodeURIComponent($(this).find("input[type=text][name=newTwitterSearchTerm]").val()), function() {
+      alert("The twitter board is updating...");
+    });
   });
 });
 </script>

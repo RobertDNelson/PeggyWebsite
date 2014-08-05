@@ -47,6 +47,38 @@
       </div>
     </div>
 
+    <div class="row">
+      <div class="large-12 columns">
+        <div class="panel">
+          <h3>Disco Text</h3>
+          <p>Change the disco text.</p>
+          <ul class="errors"></ul>
+          <form name="changeDiscoText">
+            <div>
+              <input type="text" name="newText" placeholder="New Text" required="required" />
+            </div>
+            <div>
+              <input type="submit" value="Change" class="button radius" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-12 columns">
+        <div class="panel">
+          <h3>Disco Text</h3>
+          <p>Turn off the disco text.</p>
+          <ul class="errors"></ul>
+          <form name="turnOffDiscoText">
+              <input type="submit" value="Turn Off" class="button radius" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/foundation/js/foundation.min.js"></script>
     <script src="js/app.js"></script>
@@ -86,6 +118,20 @@ $(document).on("ready", function() {
     $.get("/peggy/twitter?q=" + encodeURIComponent($(this).find("input[type=text][name=newTwitterSearchTerm]").val()), function() {
       alert("The twitter board is updating...");
     });
+  });
+
+  $("form[name=changeDiscoText]").on("submit", function(event) {
+    event.preventDefault();
+    $.get("/peggy/discoText?text=" + encodeURIComponent($(this).find("input[type=text][name=newText]").val()), function() {
+      alert("The disco text is updating...");
+    });
+  });
+
+  $("form[name=turnOffDiscoText]").on("submit", function(event) {
+    event.preventDefault();
+    $.get("/peggy/discoText/off", function() {
+       alert("Disco Text has been turned off.");
+     });
   });
 });
 </script>

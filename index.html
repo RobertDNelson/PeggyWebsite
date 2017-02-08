@@ -312,7 +312,7 @@ $(document).on("ready", function() {
     }
 
     if (errorUl.children().size() == 0) {
-      var peggyUrl = "http://10.105.4.251/peggy/write?board=" + board + "&x=" + x + "&y=" + y + "&text=" + encodeURIComponent(text);
+      var peggyUrl = "http://10.1.100.4/peggy/write?board=" + board + "&x=" + x + "&y=" + y + "&text=" + encodeURIComponent(text);
       $(this).find("input[name=peggyUrl]").val(peggyUrl);
       $("button.sendToPeggy").removeAttr("disabled");
     } else {

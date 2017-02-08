@@ -72,10 +72,10 @@ $(document).on("ready", function() {
 
     if (text) {
       var lines = text.split("\n");
-      var peggyUrl = "http://10.105.4.251/peggy/write?board=" + board + "&x=0&y=";
+      var peggyUrl = "http://10.1.100.4/peggy/write?board=" + board + "&x=0&y=";
 
       // We'll clear the board first.
-      $.get("http://10.105.4.251/peggy/clear?board=" + board)
+      $.get("http://10.1.100.4/peggy/clear?board=" + board)
           .done(function() {
             $.each(lines, function(i, line) {
               $.get(peggyUrl + i + "&text=" + encodeURIComponent(line))

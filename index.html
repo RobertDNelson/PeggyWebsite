@@ -77,7 +77,7 @@
           <h3>API</h3>
 
           <p>
-            The API can be accessed at: <code>http://10.105.4.251/peggy/</code>. From there, you
+            The API can be accessed at: <code>http://10.1.100.4/peggy/</code>. From there, you
             can make two calls: <code>write</code> and <code>clear</code>.
           </p>
 
@@ -95,7 +95,7 @@
 
           <h4>Write</h4>
           <p>
-            If you want to write content to the board, you'd call <code>http://10.105.4.251/peggy/write</code>.
+            If you want to write content to the board, you'd call <code>http://10.1.100.4/peggy/write</code>.
             The following parameters should be included in your request. All are required.
           </p>
           <ul>
@@ -115,7 +115,7 @@
           <p>
             So, if you wanted to print "Hello World!" to the middle of the bottom-left board, your
             call would look like this:
-            <code>http://10.105.4.251/peggy/write?board=2&x=33&y=5&text=Hell0%20World!</code>.
+            <code>http://10.1.100.4/peggy/write?board=2&x=33&y=5&text=Hell0%20World!</code>.
             You can use the test form below to try it out yourself.
           </p>
 
@@ -155,7 +155,7 @@
 
           <h4>Clear</h4>
           <p>
-            If you want to clear the content off the board, you'd call <code>http://10.105.4.251/peggy/clear</code>.
+            If you want to clear the content off the board, you'd call <code>http://10.1.100.4/peggy/clear</code>.
             Calling it without any parameters will clear off the entire board. Otherwise, you
             can include the board number:
           </p>
@@ -165,7 +165,7 @@
           <p>
             So, if you wanted to clear the bottom-middle board, your
             call would look like this:
-            <code>http://10.105.4.251/peggy/clear?board=3</code>.
+            <code>http://10.1.100.4/peggy/clear?board=3</code>.
           </p>
         </div>
       </div>
